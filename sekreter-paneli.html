@@ -1,1 +1,675 @@
-.
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ESERKON | Gizli Sekreter Yönetim Merkezi</title>
+<meta name="color-scheme" content="dark">
+<style>
+:root{
+  --bg:#0a0f1a;--pn:#111827;--ln:#1e3a5f;--gd:#d4a84b;--tx:#e8eef5;--mu:#8b9cb3;
+  --rd:#c45c5c;--gr:#3ecf70;--line:#1e293b;--side:#0d1320;--card:#151d2e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--tx);font:13px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+.topbar{height:50px;background:#080c14;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:10px;z-index:100}
+.logo{display:flex;align-items:center;gap:8px;color:var(--gd);font:700 14px Georgia,serif}
+.logo small{display:block;font:8px system-ui;color:#94a3b8}
+.seal{width:30px;height:30px;border-radius:50%;border:2px solid var(--gd);display:grid;place-items:center;font:700 13px Georgia,serif;background:#0f172a}
+.top-title{flex:1;font-size:11px;color:var(--mu)}.top-title b{color:var(--gd)}
+.top-actions{display:flex;gap:6px}
+.btn{border:1px solid #334155;background:#1e293b;color:#e2e8f0;border-radius:7px;padding:6px 10px;font-size:11px;cursor:pointer;font-weight:600}
+.btn:hover{border-color:var(--gd);background:#243044}
+.btn-gold{background:var(--gd);color:#111;border-color:var(--gd)}
+.btn-danger{background:#7f1d1d;border-color:#991b1b;color:#fecaca}
+.btn-ok{background:#14532d;border-color:#166534;color:#bbf7d0}
+.btn-sm{padding:4px 8px;font-size:10px}
+.app{display:grid;grid-template-columns:220px 1fr;height:calc(100vh - 50px)}
+.sidebar{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:10px 8px;overflow-y:auto}
+.side-brand{display:flex;align-items:center;gap:8px;padding:4px 4px 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.side-brand b{display:block;color:var(--gd);font:700 12px Georgia,serif}
+.side-brand small{color:#64748b;font-size:9px}
+.side-label{font-size:9px;color:#64748b;font-weight:700;letter-spacing:.5px;padding:8px 6px 3px;text-transform:uppercase}
+.door{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid transparent;color:#94a3b8;padding:8px 9px;border-radius:7px;cursor:pointer;text-align:left;font-size:12px;font-weight:600;width:100%;position:relative;margin-bottom:2px}
+.door:hover{background:#1e293b;color:#e2e8f0}
+.door.active{background:#1e3a5f;border-color:var(--gd);color:var(--gd)}
+.door .badge{position:absolute;right:7px;top:50%;transform:translateY(-50%);min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:var(--rd);color:#fff;font-size:9px;font-weight:700;display:none;place-items:center}
+.door .badge.show{display:grid}
+.side-footer{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);font-size:9px;color:#64748b;text-align:center}
+.side-footer b{color:var(--gd);display:block}
+.main{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.panel-header{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;background:#0c1220}
+.panel-header h1{margin:0;font-size:15px;color:var(--gd);font-family:Georgia,serif}
+.panel-header p{margin:2px 0 0;color:var(--mu);font-size:10px}
+.panel-body{flex:1;overflow:auto;padding:12px 14px}
+.daire{display:none}.daire.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+.card h3{margin:0 0 8px;font-size:13px;color:#f1f5f9}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:10px}
+.stat-card{background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px;display:flex;gap:8px;align-items:center}
+.stat-card .ico{width:32px;height:32px;border-radius:8px;background:#1e293b;color:var(--gd);display:grid;place-items:center;font-size:14px}
+.stat-card small{display:block;color:var(--mu);font-size:9px}
+.stat-card b{font-size:17px;color:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.form-group{margin-bottom:8px}
+.form-group label{display:block;margin-bottom:2px;font-weight:600;font-size:10px;color:var(--gd)}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:#0a0f1a;border:1px solid #334155;color:#e2e8f0;padding:7px 9px;border-radius:7px;outline:none;font-size:12px}
+.form-group textarea{min-height:60px;resize:vertical}
+.muted{color:var(--mu)}.gold{color:var(--gd)}.green{color:var(--gr)}.red{color:var(--rd)}
+.banner{background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:10px;color:#cbd5e1}
+.banner b{color:var(--gd)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.tab{border:1px solid #334155;background:#1e293b;color:#94a3b8;border-radius:16px;padding:5px 11px;font-size:11px;cursor:pointer;font-weight:600}
+.tab.on{background:var(--gd);color:#111;border-color:var(--gd)}
+.profiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.profile-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.profile-card .av{width:48px;height:48px;border-radius:50%;border:2px solid var(--gd);margin:0 auto 6px;display:grid;place-items:center;font:700 16px Georgia,serif;color:var(--gd);background:#0f172a;overflow:hidden}
+.profile-card .av img{width:100%;height:100%;object-fit:cover}
+.profile-card h4{margin:0 0 2px;font-size:13px}
+.profile-card .meta{font-size:10px;color:var(--mu);margin-bottom:6px}
+.profile-card .acts{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.profile-card .acts .btn{width:100%;font-size:10px;padding:5px 3px}
+.person-card{background:#0a0f1a;border:1px solid var(--ln);border-radius:10px;padding:14px;min-height:120px}
+.person-card .pc-top{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.person-card .pc-av{width:56px;height:56px;border-radius:50%;border:2px solid var(--gd);display:grid;place-items:center;font:700 20px Georgia,serif;color:var(--gd);background:#1e293b;flex:none;overflow:hidden}
+.person-card .pc-av img{width:100%;height:100%;object-fit:cover}
+.person-card .pc-name{font-size:15px;font-weight:700;color:#f1f5f9}
+.person-card .pc-meta{font-size:11px;color:var(--mu);line-height:1.5}
+.person-card .pc-id{font-size:10px;color:#64748b;margin-top:6px;font-family:monospace}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;color:#64748b;font-size:9px;padding:7px 5px;border-bottom:1px solid var(--line);background:#0f172a}
+td{padding:8px 5px;border-bottom:1px solid #1e293b;vertical-align:middle}
+.tag{display:inline-block;padding:2px 6px;border-radius:6px;font-size:9px;font-weight:700;border:1px solid}
+.tag.bekleyen{color:#fbbf24;border-color:#fbbf24}.tag.onay{color:var(--gr);border-color:var(--gr)}
+.tag.aktif{color:var(--gr);border-color:var(--gr)}.tag.kisitli{color:#f59e0b;border-color:#f59e0b}
+.tag.engelli{color:var(--rd);border-color:var(--rd)}.tag.sona{color:#94a3b8;border-color:#64748b}
+.empty{text-align:center;padding:20px;color:var(--mu);font-size:11px}
+.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:10px}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.form-row,.grid2{grid-template-columns:1fr}}
+.list-card{background:#0f172a;border:1px solid var(--line);border-radius:8px;padding:9px;margin-bottom:6px;display:flex;gap:8px;align-items:flex-start}
+.list-card .av{width:36px;height:36px;border-radius:50%;border:2px solid var(--gd);display:grid;place-items:center;font-weight:700;color:var(--gd);flex:none;background:#1e293b;font-size:12px;overflow:hidden}
+.list-card .av img{width:100%;height:100%;object-fit:cover}
+.list-card .info{flex:1;min-width:0}
+.list-card .info b{display:block;font-size:12px}
+.list-card .info small{color:var(--mu);font-size:10px}
+.list-card .acts{display:flex;gap:4px;flex-wrap:wrap}
+.ghost-log{background:#0a0f1a;border:1px solid var(--line);border-radius:7px;padding:8px;min-height:140px;max-height:240px;overflow:auto;font-size:11px}
+#toast-container{position:fixed;top:56px;right:12px;z-index:99999;display:flex;flex-direction:column;gap:7px;max-width:320px;pointer-events:none}
+.toast{pointer-events:auto;background:#1e293b;border:1px solid var(--gd);border-left:4px solid var(--rd);border-radius:9px;padding:10px;box-shadow:0 8px 20px rgba(0,0,0,.4);display:flex;gap:8px;cursor:pointer;animation:in .2s ease}
+.toast .body strong{display:block;color:var(--gd);font-size:11px}
+.toast .body span{font-size:10px;color:#cbd5e1}
+.toast .close{background:none;border:0;color:#94a3b8;cursor:pointer;font-size:14px}
+@keyframes in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.modal-back{position:fixed;inset:0;background:#000a;display:none;place-items:center;z-index:99990;padding:10px}
+.modal-back.open{display:grid}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:11px;width:min(440px,100%);max-height:88vh;overflow:auto;padding:14px}
+.modal h2{margin:0 0 10px;color:var(--gd);font-size:14px}
+.modal-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+.svc{padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;border:1px solid;display:inline-block}
+.svc.on{color:var(--gr);border-color:var(--gr)}.svc.off{color:#64748b;border-color:#334155}
+.svc-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.sub{display:none}.sub.on{display:block}
+.hero-mini{text-align:center;padding:12px 8px 6px}
+.hero-mini h2{font:700 18px Georgia,serif;color:#f1f5f9;margin-bottom:4px}
+.hero-mini h2 span{color:var(--gd)}
+.hero-mini p{color:var(--mu);font-size:11px}
+.room-tag{display:inline-block;background:#1e3a5f;color:var(--gd);padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;margin-right:4px}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="logo"><span class="seal">E</span><div>ESERKON <small>GİZLİ SEKRETER</small></div></div>
+  <div class="top-title"><b>Apartman</b> · Şikayette oda adı net · Panel bazlı yaptırım</div>
+  <div class="top-actions">
+    <button class="btn btn-sm" onclick="testNotif()">🔔 Test</button>
+    <button class="btn btn-sm btn-danger" onclick="if(confirm('Çıkış?'))toast('Çıkış','Oturum kapatıldı')">Çıkış</button>
+  </div>
+</header>
+<div class="app">
+  <aside class="sidebar">
+    <div class="side-brand"><span class="seal" style="width:34px;height:34px">E</span><div><b>SEKRETER</b><small>Yönetim Apartmanı</small></div></div>
+    <div class="side-label">Daireler</div>
+    <button class="door active" data-d="dash" onclick="go('dash')"><span>▦</span> Genel Bakış <span class="badge" id="b-dash">0</span></button>
+    <button class="door" data-d="erisim" onclick="go('erisim')"><span>🔑</span> Erişim & Kod <span class="badge" id="b-erisim">0</span></button>
+    <button class="door" data-d="arkadas" onclick="go('arkadas')"><span>👥</span> Arkadaş Bul <span class="badge" id="b-arkadas">0</span></button>
+    <button class="door" data-d="sosyal" onclick="go('sosyal')"><span>🌐</span> Sosyal Platform <span class="badge" id="b-sosyal">0</span></button>
+    <button class="door" data-d="servis" onclick="go('servis')"><span>⚙</span> Servisler</button>
+    <div class="side-footer"><b>ESERKON</b>Gizli · 7/24</div>
+  </aside>
+  <main class="main">
+    <section id="d-dash" class="daire active">
+      <div class="panel-header"><div><h1>▦ Genel Bakış</h1><p>Kaynaklı bildirim · Etüt odası adı dahil</p></div></div>
+      <div class="panel-body">
+        <div class="svc-row" id="svcRow"></div>
+        <div class="stat-row">
+          <div class="stat-card"><div class="ico">⚑</div><div><small>Açık Şikayet</small><b id="s-rep">0</b></div></div>
+          <div class="stat-card"><div class="ico">🔑</div><div><small>Bekleyen Erişim</small><b id="s-erisim">0</b></div></div>
+          <div class="stat-card"><div class="ico">👥</div><div><small>Arkadaş Bul</small><b id="s-ark">0</b></div></div>
+          <div class="stat-card"><div class="ico">🌐</div><div><small>Sosyal / Etüt</small><b id="s-soc">0</b></div></div>
+        </div>
+        <div class="card"><h3>Anlık Bildirimler</h3>
+          <p class="muted" style="font-size:10px;margin-bottom:8px">Örn: “Etüt · Fizik-2 · Arzu → Sadık” → tıkla → panel + profil</p>
+          <div id="eventList" class="empty">Bildirim yok</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="d-erisim" class="daire">
+      <div class="panel-header"><div><h1>🔑 Erişim & Kod</h1><p>Talep · Kod (Brevo) · Engelle · Sil</p></div>
+        <button class="btn btn-gold" onclick="openModal('codeModal')">+ Yeni Kod</button></div>
+      <div class="panel-body"><div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>KİŞİ</th><th>İLETİŞİM</th><th>TARİH</th><th>DURUM</th><th>İŞLEM</th></tr></thead>
+        <tbody id="erisimBody"></tbody>
+      </table></div></div></div>
+    </section>
+
+    <section id="d-arkadas" class="daire">
+      <div class="panel-header"><div><h1>👥 Arkadaş Bul</h1><p>Profiller · Sohbet · Yaptırım · Engelli/Kısıtlı/Sona eren</p></div></div>
+      <div class="panel-body">
+        <div class="tabs">
+          <button class="tab on" data-sub="ark-prof" onclick="sub('arkadas','ark-prof')">Profiller</button>
+          <button class="tab" data-sub="ark-sohbet" onclick="sub('arkadas','ark-sohbet')">Sohbet Odaları</button>
+          <button class="tab" data-sub="ark-sikayet" onclick="sub('arkadas','ark-sikayet')">Şikayetler</button>
+          <button class="tab" data-sub="ark-yaptirim" onclick="sub('arkadas','ark-yaptirim')">Yaptırım</button>
+          <button class="tab" data-sub="ark-listeler" onclick="sub('arkadas','ark-listeler')">Engelli / Kısıtlı / Sona Eren</button>
+          <button class="tab" data-sub="ark-duyuru" onclick="sub('arkadas','ark-duyuru')">Duyuru</button>
+          <button class="tab" data-sub="ark-gizli" onclick="sub('arkadas','ark-gizli')">Gizli Mesaj</button>
+        </div>
+        <div id="ark-prof" class="sub on">
+          <div class="hero-mini"><h2>Dostluk, <span>güvenle</span> başlar</h2><p>Tüm profiller</p></div>
+          <div class="profiles" id="profileGrid"></div>
+        </div>
+        <div id="ark-sohbet" class="sub">
+          <div class="banner"><b>Hayalet:</b> Ziyaretçi sekreteri görmez.</div>
+          <div class="grid2">
+            <div class="card"><h3>Oda · Canlı İzle</h3>
+              <div class="form-group"><label>Oda</label>
+                <select id="roomSelect" onchange="loadGhost()"><option>Genel Salon</option><option>Öğretmenler Odası</option><option>Öğrenciler Odası</option><option>Ziyaretçiler Odası</option><option>Özel Sohbet Odası</option></select>
+              </div>
+              <div class="ghost-log" id="ghostLog"><div class="muted">Oda seçin</div></div>
+            </div>
+            <div class="card"><h3>Bildirimsiz oda uyarısı</h3>
+              <div class="form-group"><label>Mesaj</label><textarea id="arkRoomAlert" rows="3"></textarea></div>
+              <button class="btn btn-gold" style="width:100%" onclick="sendArkRoomAlert()">Gönder</button>
+            </div>
+          </div>
+        </div>
+        <div id="ark-sikayet" class="sub">
+          <div class="grid2">
+            <div class="card"><h3>Şikayetler (Arkadaş Bul)</h3><div id="arkRepList" class="empty">Açık şikayet yok</div></div>
+            <div class="card"><h3>Şikayet edilen kişi</h3><div id="arkRepPerson" class="person-card muted">Şikayete tıklayın</div></div>
+          </div>
+        </div>
+        <div id="ark-yaptirim" class="sub">
+          <div class="banner">Sadece <b>Arkadaş Bul</b>. 3 gün kısıtlama otomatik kalkar.</div>
+          <div class="grid2">
+            <div class="card"><h3>Yaptırım</h3>
+              <div class="form-group"><label>Kişi</label><select id="arkYapMember" onchange="showPersonCard('ark','yap')"></select></div>
+              <div class="form-group"><label>İşlem</label>
+                <select id="arkYapAct"><option value="warn">Özel uyarı</option><option value="mute">3 Gün Kısıtla</option><option value="block">Engelle</option><option value="terminate">Üyeliği Sonlandır</option></select>
+              </div>
+              <div class="form-group"><label>Gerekçe</label><textarea id="arkYapReason" rows="2"></textarea></div>
+              <button class="btn btn-gold" style="width:100%" onclick="applyYap('arkadas')">Uygula</button>
+            </div>
+            <div class="card"><h3>Seçilen kişi</h3><div id="arkYapPerson" class="person-card muted">Kişi seçin</div></div>
+          </div>
+        </div>
+        <div id="ark-listeler" class="sub">
+          <div class="banner">Erken affet · Engel kaldır · Üyeliği aktif et</div>
+          <div class="card"><h3>Kısıtlılar</h3><div id="arkMuteList" class="empty">Yok</div></div>
+          <div class="card"><h3>Engellenenler</h3><div id="arkBlockList" class="empty">Yok</div></div>
+          <div class="card"><h3>Üyeliği Sona Erenler</h3><div id="arkTermList" class="empty">Yok</div></div>
+        </div>
+        <div id="ark-duyuru" class="sub">
+          <div class="card"><h3>Toplu Duyuru (Arkadaş Bul)</h3>
+            <div class="form-group"><label>Hedef</label><div style="display:flex;gap:12px;flex-wrap:wrap">
+              <label><input type="checkbox" id="arkChkT" checked> Öğretmen</label>
+              <label><input type="checkbox" id="arkChkS" checked> Öğrenci</label>
+              <label><input type="checkbox" id="arkChkN" checked> Ziyaretçi</label>
+            </div></div>
+            <div class="form-group"><label>Konu</label><input id="arkDuySub"></div>
+            <div class="form-group"><label>Metin</label><textarea id="arkDuyText" rows="3"></textarea></div>
+            <button class="btn btn-gold" onclick="sendDuyuru('arkadas')">Gönder</button>
+          </div>
+        </div>
+        <div id="ark-gizli" class="sub">
+          <div class="grid2">
+            <div class="card"><h3>Gizli Mesaj</h3>
+              <div class="form-group"><label>Kişi</label><select id="arkGizliMember" onchange="showPersonCard('ark','gizli')"></select></div>
+              <div class="form-group"><label>Mesaj</label><textarea id="arkGizliText" rows="3"></textarea></div>
+              <button class="btn btn-gold" onclick="sendGizli('arkadas')">Gizli Gönder</button>
+            </div>
+            <div class="card"><h3>Alıcı</h3><div id="arkGizliPerson" class="person-card muted">Kişi seçin</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="d-sosyal" class="daire">
+      <div class="panel-header"><div><h1>🌐 Sosyal Platform</h1><p>Akış · Etüt (oda adı net) · Yaptırım · Kurumsal</p></div></div>
+      <div class="panel-body">
+        <div class="tabs">
+          <button class="tab on" data-sub="soc-akis" onclick="sub('sosyal','soc-akis')">Akış</button>
+          <button class="tab" data-sub="soc-etut" onclick="sub('sosyal','soc-etut')">Etüt Odaları (Gizli)</button>
+          <button class="tab" data-sub="soc-sikayet" onclick="sub('sosyal','soc-sikayet')">Şikayetler</button>
+          <button class="tab" data-sub="soc-yaptirim" onclick="sub('sosyal','soc-yaptirim')">Yaptırım</button>
+          <button class="tab" data-sub="soc-listeler" onclick="sub('sosyal','soc-listeler')">Engelli / Kısıtlı / Sona Eren</button>
+          <button class="tab" data-sub="soc-duyuru" onclick="sub('sosyal','soc-duyuru')">Duyuru</button>
+          <button class="tab" data-sub="soc-gizli" onclick="sub('sosyal','soc-gizli')">Gizli Mesaj</button>
+          <button class="tab" data-sub="soc-kurum" onclick="sub('sosyal','soc-kurum')">Kurumsal Medya</button>
+        </div>
+        <div id="soc-akis" class="sub on"><div class="card"><h3>Son Paylaşımlar</h3><div id="socFeed" class="empty">Firebase sonrası</div></div></div>
+        <div id="soc-etut" class="sub">
+          <div class="banner"><b>Hayalet izleme.</b> Sosyal Platform’da her ders için 3 oda olacak (Fizik-1/2/3 …). Şikayette <b>ders + oda no</b> görünecek.</div>
+          <div class="grid2">
+            <div class="card"><h3>Etüt Odası Seç</h3>
+              <div class="form-group"><label>Oda (örnek set)</label>
+                <select id="etutSelect" onchange="loadEtutGhost()">
+                  <option value="Matematik-1">Matematik Etüt Odası 1</option>
+                  <option value="Matematik-2">Matematik Etüt Odası 2</option>
+                  <option value="Matematik-3">Matematik Etüt Odası 3</option>
+                  <option value="Fizik-1">Fizik Etüt Odası 1</option>
+                  <option value="Fizik-2">Fizik Etüt Odası 2</option>
+                  <option value="Fizik-3">Fizik Etüt Odası 3</option>
+                  <option value="Kimya-1">Kimya Etüt Odası 1</option>
+                  <option value="Kimya-2">Kimya Etüt Odası 2</option>
+                  <option value="Kimya-3">Kimya Etüt Odası 3</option>
+                  <option value="Biyoloji-1">Biyoloji Etüt Odası 1</option>
+                  <option value="Biyoloji-2">Biyoloji Etüt Odası 2</option>
+                  <option value="Biyoloji-3">Biyoloji Etüt Odası 3</option>
+                </select>
+              </div>
+              <div class="ghost-log" id="etutLog"><div class="muted">Oda seçin · Canlı akış Firebase sonrası</div></div>
+            </div>
+            <div class="card"><h3>Bu odaya bildirimsiz uyarı</h3>
+              <div class="form-group"><label>Mesaj</label><textarea id="etutAlert" rows="3"></textarea></div>
+              <button class="btn btn-gold" style="width:100%" onclick="sendEtutAlert()">Gönder</button>
+            </div>
+          </div>
+        </div>
+        <div id="soc-sikayet" class="sub">
+          <div class="grid2">
+            <div class="card"><h3>Şikayetler (Sosyal + Etüt)</h3>
+              <p class="muted" style="font-size:10px;margin-bottom:6px">Etüt şikayetinde oda etiketi: <span class="room-tag">Etüt · Fizik-2</span></p>
+              <div id="socRepList" class="empty">Açık şikayet yok</div>
+            </div>
+            <div class="card"><h3>Şikayet edilen kişi</h3><div id="socRepPerson" class="person-card muted">Şikayete tıklayın</div></div>
+          </div>
+        </div>
+        <div id="soc-yaptirim" class="sub">
+          <div class="banner">Sadece <b>Sosyal Platform</b>. 3 gün otomatik kalkar.</div>
+          <div class="grid2">
+            <div class="card"><h3>Yaptırım</h3>
+              <div class="form-group"><label>Kişi</label><select id="socYapMember" onchange="showPersonCard('soc','yap')"></select></div>
+              <div class="form-group"><label>İşlem</label>
+                <select id="socYapAct"><option value="warn">Özel uyarı</option><option value="mute">3 Gün Kısıtla</option><option value="block">Engelle</option><option value="terminate">Üyeliği Sonlandır</option></select>
+              </div>
+              <div class="form-group"><label>Gerekçe</label><textarea id="socYapReason" rows="2"></textarea></div>
+              <button class="btn btn-gold" style="width:100%" onclick="applyYap('sosyal')">Uygula</button>
+            </div>
+            <div class="card"><h3>Seçilen kişi</h3><div id="socYapPerson" class="person-card muted">Kişi seçin</div></div>
+          </div>
+        </div>
+        <div id="soc-listeler" class="sub">
+          <div class="card"><h3>Kısıtlılar</h3><div id="socMuteList" class="empty">Yok</div></div>
+          <div class="card"><h3>Engellenenler</h3><div id="socBlockList" class="empty">Yok</div></div>
+          <div class="card"><h3>Üyeliği Sona Erenler</h3><div id="socTermList" class="empty">Yok</div></div>
+        </div>
+        <div id="soc-duyuru" class="sub">
+          <div class="card"><h3>Toplu Duyuru (Sosyal)</h3>
+            <div class="form-group"><label>Hedef</label><div style="display:flex;gap:12px;flex-wrap:wrap">
+              <label><input type="checkbox" id="socChkT" checked> Öğretmen</label>
+              <label><input type="checkbox" id="socChkS" checked> Öğrenci</label>
+              <label><input type="checkbox" id="socChkN" checked> Ziyaretçi</label>
+            </div></div>
+            <div class="form-group"><label>Konu</label><input id="socDuySub"></div>
+            <div class="form-group"><label>Metin</label><textarea id="socDuyText" rows="3"></textarea></div>
+            <button class="btn btn-gold" onclick="sendDuyuru('sosyal')">Gönder</button>
+          </div>
+        </div>
+        <div id="soc-gizli" class="sub">
+          <div class="grid2">
+            <div class="card"><h3>Gizli Mesaj</h3>
+              <div class="form-group"><label>Kişi</label><select id="socGizliMember" onchange="showPersonCard('soc','gizli')"></select></div>
+              <div class="form-group"><label>Mesaj</label><textarea id="socGizliText" rows="3"></textarea></div>
+              <button class="btn btn-gold" onclick="sendGizli('sosyal')">Gizli Gönder</button>
+            </div>
+            <div class="card"><h3>Alıcı</h3><div id="socGizliPerson" class="person-card muted">Kişi seçin</div></div>
+          </div>
+        </div>
+        <div id="soc-kurum" class="sub">
+          <div class="banner">Kurumsal medya · Max 60 sn / 30 MB</div>
+          <div class="card"><button class="btn btn-gold" onclick="openModal('corpModal')">+ Medya Yükle</button>
+            <div id="corpList" class="empty" style="margin-top:10px">Yok</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="d-servis" class="daire">
+      <div class="panel-header"><div><h1>⚙ Servisler</h1><p>Firebase · Brevo · Supabase · Cloudflare · Vercel</p></div></div>
+      <div class="panel-body">
+        <div class="svc-row" id="svcRow2"></div>
+        <div class="card"><h3>Firebase</h3>
+          <div class="form-row"><div class="form-group"><label>apiKey</label><input id="fbKey"></div><div class="form-group"><label>authDomain</label><input id="fbAuth"></div></div>
+          <div class="form-row"><div class="form-group"><label>databaseURL</label><input id="fbDb"></div><div class="form-group"><label>storageBucket</label><input id="fbSt"></div></div>
+          <div class="form-row"><div class="form-group"><label>projectId</label><input id="fbProj"></div><div class="form-group"><label>appId</label><input id="fbApp"></div></div>
+          <button class="btn btn-gold" onclick="saveCfg('firebase')">Kaydet</button>
+        </div>
+        <div class="card"><h3>Brevo</h3>
+          <div class="form-row"><div class="form-group"><label>API Key</label><input id="brKey"></div><div class="form-group"><label>Gönderen</label><input id="brFrom"></div></div>
+          <button class="btn" onclick="saveCfg('brevo')">Kaydet</button>
+        </div>
+        <div class="card"><h3>Supabase</h3>
+          <div class="form-row"><div class="form-group"><label>URL</label><input id="sbUrl"></div><div class="form-group"><label>anon key</label><input id="sbKey"></div></div>
+          <button class="btn" onclick="saveCfg('supabase')">Kaydet</button>
+        </div>
+        <div class="card"><h3>Cloudflare</h3><div class="form-group"><label>Not</label><input id="cfNote"></div><button class="btn" onclick="saveCfg('cloudflare')">Kaydet</button></div>
+        <div class="card"><h3>Vercel</h3><p class="muted" style="font-size:11px">Env: FIREBASE_* BREVO_* SUPABASE_*</p></div>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="toast-container"></div>
+<div class="modal-back" id="codeModal"><div class="modal"><h2>Yeni Kod</h2>
+  <div class="form-group"><label>Ad</label><input id="mName"></div>
+  <div class="form-group"><label>E-posta</label><input id="mEmail" type="email"></div>
+  <div class="form-group"><label>Telefon</label><input id="mPhone"></div>
+  <div class="form-group"><label>Rol</label><select id="mRole"><option>Öğrenci</option><option>Öğretmen</option><option>Normal Ziyaretçi</option></select></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('codeModal')">Vazgeç</button><button class="btn btn-gold" onclick="createCode()">Oluştur</button></div>
+</div></div>
+<div class="modal-back" id="corpModal"><div class="modal"><h2>Kurumsal Medya</h2>
+  <div class="form-group"><label>Başlık</label><input id="cTitle"></div>
+  <div class="form-group"><label>Dosya</label><input id="cFile" type="file" accept="image/*,video/*"></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('corpModal')">Vazgeç</button><button class="btn btn-gold" onclick="saveCorp()">Yükle</button></div>
+</div></div>
+<script>
+const MUTE_MS=3*24*60*60*1000;
+const K={erisim:'esk4_erisim',members:'esk4_members',reports:'esk4_reports',corp:'esk4_corp',cfg:'esk4_cfg',events:'esk4_events'};
+let erisim=JSON.parse(localStorage.getItem(K.erisim)||'[]');
+let members=JSON.parse(localStorage.getItem(K.members)||'null');
+let reports=JSON.parse(localStorage.getItem(K.reports)||'[]');
+let corp=JSON.parse(localStorage.getItem(K.corp)||'[]');
+let cfg=JSON.parse(localStorage.getItem(K.cfg)||'{}');
+let events=JSON.parse(localStorage.getItem(K.events)||'[]');
+
+if(!members){
+  members=[
+    {id:'1',name:'Nur Kunt',role:'Normal Ziyaretçi',city:'Türkiye',age:25,email:'nur@demo',status:'Aktif',online:true,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'2',name:'Soner sungur',role:'Normal Ziyaretçi',city:'MARDİN',age:25,email:'soner@demo',status:'Aktif',online:true,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'3',name:'ali',role:'Normal Ziyaretçi',city:'van',age:22,email:'ali@demo',status:'Aktif',online:false,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'4',name:'Rümeysa',role:'Normal Ziyaretçi',city:'Bursa',age:26,email:'rum@demo',status:'Aktif',online:false,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'5',name:'Nur',role:'Normal Ziyaretçi',city:'Bolu',age:35,email:'nur2@demo',status:'Aktif',online:false,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'6',name:'Arzu',role:'Öğretmen',city:'Ankara',age:32,email:'arzu@eserkon',status:'Aktif',online:true,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'7',name:'Sadık',role:'Öğrenci',city:'İstanbul',age:18,email:'sadik@eserkon',status:'Aktif',online:true,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'8',name:'Bora S.',role:'Öğrenci',city:'Ankara',age:19,email:'bora@eserkon.org',status:'Aktif',online:false,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'9',name:'Mert A.',role:'Öğretmen',city:'İstanbul',age:34,email:'mert@eserkon.org',status:'Aktif',online:false,photo:null,arkadas:{state:'active'},sosyal:{state:'active'}},
+    {id:'10',name:'Ozan P.',role:'Normal Ziyaretçi',city:'Trabzon',age:31,email:'ozan@eserkon.org',status:'Aktif',online:false,photo:null,arkadas:{state:'muted',muteUntil:Date.now()+MUTE_MS},sosyal:{state:'active'}}
+  ];
+  localStorage.setItem(K.members,JSON.stringify(members));
+}
+if(!erisim.length){
+  erisim=[{id:'e1',name:'davut',email:'s.88.mstf@gmail.com',phone:'05465879658',date:'28.10.2026 19:48',status:'BEKLEYEN'},{id:'e2',name:'harun',email:'s.88.mstf@gmail.com',phone:'0546',date:'19.10.2026 13:31',status:'ONAYLANDI'}];
+  localStorage.setItem(K.erisim,JSON.stringify(erisim));
+}
+
+function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function now(){return new Date().toLocaleString('tr-TR')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function init(s){return (s||'?')[0].toUpperCase()}
+function appKey(app){return app==='arkadas'?'arkadas':'sosyal'}
+
+function expireMutes(){
+  let ch=false;const t=Date.now();
+  members.forEach(m=>{['arkadas','sosyal'].forEach(app=>{
+    const st=m[app];if(st&&st.state==='muted'&&st.muteUntil&&t>st.muteUntil){st.state='active';delete st.muteUntil;ch=true}
+  })});
+  if(ch) save(K.members,members);
+}
+
+function go(id){
+  expireMutes();
+  document.querySelectorAll('.daire').forEach(e=>e.classList.remove('active'));
+  document.getElementById('d-'+id)?.classList.add('active');
+  document.querySelectorAll('.door').forEach(b=>b.classList.toggle('active',b.dataset.d===id));
+  if(id==='erisim') renderErisim();
+  if(id==='arkadas'){renderProfiles();fillSelects('ark');renderArkRep();renderAppLists('arkadas')}
+  if(id==='sosyal'){fillSelects('soc');renderSocRep();renderAppLists('sosyal');renderCorp()}
+  if(id==='dash') renderDash();
+  if(id==='servis'){loadCfg();renderSvc()}
+}
+function sub(panel,subId){
+  const root=document.getElementById('d-'+panel);
+  root.querySelectorAll('.sub').forEach(s=>s.classList.remove('on'));
+  root.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.sub===subId));
+  document.getElementById(subId)?.classList.add('on');
+  if(subId==='ark-sohbet') loadGhost();
+  if(subId==='soc-etut') loadEtutGhost();
+  if(subId==='ark-listeler') renderAppLists('arkadas');
+  if(subId==='soc-listeler') renderAppLists('sosyal');
+}
+
+function playBell(){try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.1;o.start();g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.28);o.stop(c.currentTime+.28)}catch(e){}}
+function toast(title,msg,targetPanel,meta){
+  playBell();
+  if(targetPanel){const b=document.getElementById('b-'+targetPanel);if(b){const n=+(b.textContent||0)+1;b.textContent=n;b.classList.add('show')}}
+  const box=document.getElementById('toast-container');
+  const el=document.createElement('div');el.className='toast';
+  el.innerHTML=`<div class="body"><strong>${esc(title)}</strong><span>${esc(msg||'')}</span></div><button class="close">×</button>`;
+  el.querySelector('.close').onclick=e=>{e.stopPropagation();el.remove()};
+  el.onclick=()=>{
+    if(targetPanel) go(targetPanel);
+    if(meta?.sub) setTimeout(()=>sub(targetPanel,meta.sub),40);
+    if(meta?.memberId) setTimeout(()=>{
+      const pre=targetPanel==='arkadas'?'ark':'soc';
+      const sel=document.getElementById(pre+'YapMember');
+      if(sel){sel.value=meta.memberId;showPersonCard(pre,'yap')}
+      const repBox=document.getElementById(pre+'RepPerson');
+      if(repBox) renderPersonCard(repBox,members.find(m=>m.id===meta.memberId));
+    },60);
+    el.remove();
+  };
+  box.appendChild(el);setTimeout(()=>el.parentNode&&el.remove(),14000);
+  events.unshift({title,msg,targetPanel,meta,time:now()});if(events.length>30) events=events.slice(0,30);
+  save(K.events,events);updateStats();
+}
+
+function testNotif(){
+  const samples=[
+    {title:'Sohbet · Öğretmenler Odası',msg:"Arzu, Sadık'ı şikayet ediyor",panel:'arkadas',sub:'ark-sikayet',memberId:'7'},
+    {title:'Etüt · Fizik-2',msg:"Arzu, Sadık'ı şikayet ediyor",panel:'sosyal',sub:'soc-sikayet',memberId:'7'},
+    {title:'Erişim Talebi',msg:'Yeni kod talebi',panel:'erisim'}
+  ];
+  const x=samples[Math.floor(Math.random()*samples.length)];
+  toast(x.title,x.msg,x.panel,{sub:x.sub,memberId:x.memberId});
+}
+
+function updateStats(){
+  expireMutes();
+  const open=reports.filter(r=>r.status==='open');
+  document.getElementById('s-rep').textContent=open.length;
+  document.getElementById('s-erisim').textContent=erisim.filter(e=>e.status==='BEKLEYEN').length;
+  document.getElementById('s-ark').textContent=open.filter(r=>r.app==='arkadas').length;
+  document.getElementById('s-soc').textContent=open.filter(r=>r.app==='sosyal').length;
+  [['erisim',erisim.filter(e=>e.status==='BEKLEYEN').length],['arkadas',open.filter(r=>r.app==='arkadas').length],['sosyal',open.filter(r=>r.app==='sosyal').length]].forEach(([id,n])=>{
+    const b=document.getElementById('b-'+id);if(b){b.textContent=n;b.classList.toggle('show',n>0)}
+  });
+}
+function renderDash(){
+  updateStats();renderSvc();
+  const box=document.getElementById('eventList');
+  if(!events.length){box.className='empty';box.textContent='Bildirim yok';return}
+  box.className='';
+  box.innerHTML=events.slice(0,15).map(e=>`
+    <div class="list-card" style="cursor:pointer" onclick="go('${e.targetPanel||'dash'}');${e.meta?.sub?`setTimeout(()=>sub('${e.targetPanel}','${e.meta.sub}'),40)`:''}${e.meta?.memberId?`;setTimeout(()=>{const p=document.getElementById('${e.targetPanel==='arkadas'?'ark':'soc'}RepPerson');if(p)renderPersonCard(p,members.find(m=>m.id==='${e.meta.memberId}'))},80)`:''}">
+      <div class="av">!</div>
+      <div class="info"><b>${esc(e.title)}</b><small>${esc(e.msg)} · ${esc(e.time)}</small></div>
+    </div>`).join('');
+}
+
+function personCardHtml(m){
+  if(!m) return '<span class="muted">Kişi seçilmedi</span>';
+  const appStates=[];
+  if(m.arkadas?.state==='muted') appStates.push('Arkadaş: Kısıtlı');
+  if(m.arkadas?.state==='blocked') appStates.push('Arkadaş: Engelli');
+  if(m.arkadas?.state==='terminated') appStates.push('Arkadaş: Sona erdi');
+  if(m.sosyal?.state==='muted') appStates.push('Sosyal: Kısıtlı');
+  if(m.sosyal?.state==='blocked') appStates.push('Sosyal: Engelli');
+  if(m.sosyal?.state==='terminated') appStates.push('Sosyal: Sona erdi');
+  const av=m.photo?`<img src="${esc(m.photo)}" alt="">`:esc(init(m.name));
+  return `<div class="pc-top"><div class="pc-av">${av}</div><div><div class="pc-name">${esc(m.name)}</div><div class="pc-meta">${esc(m.role)} · ${esc(m.city||'')} · ${m.age||'-'} yaş</div></div></div>
+    <div class="pc-meta">✉ ${esc(m.email||'-')}<br>Genel: <span class="${m.status==='Aktif'?'green':'red'}">${esc(m.status)}</span>
+    ${appStates.length?'<br>'+appStates.map(s=>'<span class="red">'+esc(s)+'</span>').join(' · '):''}</div>
+    <div class="pc-id">ID: ${esc(m.id)}</div>`;
+}
+function renderPersonCard(el,m){if(!el)return;el.className='person-card';el.innerHTML=personCardHtml(m)}
+function showPersonCard(pre,kind){
+  const sel=document.getElementById(pre+(kind==='yap'?'YapMember':'GizliMember'));
+  const box=document.getElementById(pre+(kind==='yap'?'YapPerson':'GizliPerson'));
+  renderPersonCard(box,members.find(x=>x.id===sel?.value));
+}
+
+function renderErisim(){
+  document.getElementById('erisimBody').innerHTML=erisim.map(e=>`<tr>
+    <td><b>${esc(e.name)}</b></td><td>${esc(e.email)}<br><small class="muted">${esc(e.phone||'')}</small></td>
+    <td>${esc(e.date)}</td><td><span class="tag ${e.status==='BEKLEYEN'?'bekleyen':'onay'}">${esc(e.status)}</span></td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-gold" onclick="kodGonder('${e.id}')">Kodu Gönder</button>
+      <button class="btn btn-sm btn-danger" onclick="erisimAct('${e.id}','red')">Olumsuz</button>
+      <button class="btn btn-sm" onclick="erisimAct('${e.id}','block')">Engelle</button>
+      <button class="btn btn-sm" onclick="erisimAct('${e.id}','del')">Sil</button>
+    </td></tr>`).join('')||'<tr><td colspan="5" class="empty">Yok</td></tr>';
+}
+function kodGonder(id){const e=erisim.find(x=>x.id===id);if(!e)return;e.status='ONAYLANDI';const code='ESK-'+Math.random().toString(36).slice(2,8).toUpperCase();save(K.erisim,erisim);renderErisim();updateStats();toast('Kod gönderildi',`${e.name} → ${code} (Brevo)`,'erisim')}
+function erisimAct(id,act){if(act==='del'||act==='red')erisim=erisim.filter(x=>x.id!==id);else{const e=erisim.find(x=>x.id===id);if(e)e.status='ENGELLENDİ'}save(K.erisim,erisim);renderErisim();updateStats()}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function createCode(){const name=document.getElementById('mName').value.trim(),email=document.getElementById('mEmail').value.trim();if(!name||!email)return alert('Ad ve e-posta gerekli');erisim.unshift({id:uid(),name,email,phone:document.getElementById('mPhone').value,date:now(),status:'BEKLEYEN'});save(K.erisim,erisim);closeModal('codeModal');renderErisim();updateStats();toast('Yeni talep',name,'erisim')}
+
+function renderProfiles(){
+  expireMutes();
+  document.getElementById('profileGrid').innerHTML=members.map(m=>{
+    const st=m.arkadas?.state||'active';
+    const stLabel=st==='muted'?'Kısıtlı':st==='blocked'?'Engelli':st==='terminated'?'Sona erdi':'Aktif';
+    return `<div class="profile-card"><div class="av">${m.photo?`<img src="${esc(m.photo)}">`:esc(init(m.name))}</div>
+      <h4>${esc(m.name)}</h4>
+      <div class="meta">${esc(m.city)} · ${m.age||'-'} · [${esc(m.role)}]<br>
+        <span class="${m.online?'green':'muted'}">${m.online?'●':'○'}</span> · <span class="${st==='active'?'green':'red'}">${stLabel}</span></div>
+      <div class="acts">
+        <button class="btn btn-sm" onclick="sub('arkadas','ark-yaptirim');document.getElementById('arkYapMember').value='${m.id}';showPersonCard('ark','yap')">Yaptırım</button>
+        <button class="btn btn-sm btn-gold" onclick="sub('arkadas','ark-gizli');document.getElementById('arkGizliMember').value='${m.id}';showPersonCard('ark','gizli')">Gizli Mesaj</button>
+      </div></div>`;
+  }).join('');
+}
+function loadGhost(){const room=document.getElementById('roomSelect').value;document.getElementById('ghostLog').innerHTML=`<div class="green">🔒 Hayalet · <b>${esc(room)}</b></div><div class="muted" style="margin-top:6px">Firebase sonrası canlı akış</div>`}
+function loadEtutGhost(){const room=document.getElementById('etutSelect').value;document.getElementById('etutLog').innerHTML=`<div class="green">🔒 Hayalet · <span class="room-tag">Etüt · ${esc(room)}</span></div><div class="muted" style="margin-top:6px">Bu odanın mesajları burada görünecek</div>`}
+function sendArkRoomAlert(){const t=document.getElementById('arkRoomAlert').value.trim();if(!t)return alert('Mesaj yazın');toast('Gizli oda uyarısı',t.slice(0,50),'arkadas',{sub:'ark-sohbet'});document.getElementById('arkRoomAlert').value=''}
+function sendEtutAlert(){const t=document.getElementById('etutAlert').value.trim();const room=document.getElementById('etutSelect').value;if(!t)return alert('Mesaj yazın');toast('Etüt · '+room+' gizli uyarı',t.slice(0,50),'sosyal',{sub:'soc-etut'});document.getElementById('etutAlert').value=''}
+
+function roomLabel(r){if(!r)return '';return r.startsWith('Etüt')||r.includes('-')?`<span class="room-tag">${esc(r.startsWith('Etüt')?r:'Etüt · '+r)}</span> `:`${esc(r)} · `}
+
+function renderArkRep(){
+  const list=reports.filter(r=>r.app==='arkadas'&&r.status==='open');
+  const box=document.getElementById('arkRepList');
+  if(!list.length){box.className='empty';box.textContent='Açık şikayet yok';return}
+  box.className='';
+  box.innerHTML=list.map(r=>`<div class="list-card" style="cursor:pointer" onclick="renderPersonCard(document.getElementById('arkRepPerson'),members.find(m=>m.id==='${r.targetId}'||m.name==='${esc(r.target)}'))">
+    <div class="av">💬</div>
+    <div class="info"><b>${roomLabel(r.room)}${esc(r.type)}</b><small>${esc(r.from)} → <b>${esc(r.target)}</b> · ${esc(r.detail)}</small></div>
+    <div class="acts"><button class="btn btn-sm" onclick="event.stopPropagation();sub('arkadas','ark-sohbet')">İzle</button>
+    <button class="btn btn-sm btn-gold" onclick="event.stopPropagation();closeRep('${r.id}')">Kapat</button></div></div>`).join('');
+}
+function renderSocRep(){
+  const list=reports.filter(r=>r.app==='sosyal'&&r.status==='open');
+  const box=document.getElementById('socRepList');
+  if(!list.length){box.className='empty';box.textContent='Açık şikayet yok';return}
+  box.className='';
+  box.innerHTML=list.map(r=>`<div class="list-card" style="cursor:pointer" onclick="renderPersonCard(document.getElementById('socRepPerson'),members.find(m=>m.id==='${r.targetId}'||m.name==='${esc(r.target)}'))">
+    <div class="av">🌐</div>
+    <div class="info"><b>${roomLabel(r.room)}${esc(r.type)}</b><small>${esc(r.detail)} · ${esc(r.from)} → <b>${esc(r.target)}</b></small></div>
+    <div class="acts">
+      ${r.room?`<button class="btn btn-sm" onclick="event.stopPropagation();sub('sosyal','soc-etut');document.getElementById('etutSelect').value='${esc(r.room.replace(/^Etüt · /,''))}';loadEtutGhost()">Odayı İzle</button>`:''}
+      <button class="btn btn-sm btn-gold" onclick="event.stopPropagation();closeRep('${r.id}')">Kapat</button>
+    </div></div>`).join('');
+}
+
+function fillSelects(pre){
+  const opts=members.map(m=>`<option value="${m.id}">${esc(m.name)} (${esc(m.role)}) · ${esc(m.email)}</option>`).join('');
+  ['YapMember','GizliMember'].forEach(s=>{const el=document.getElementById(pre+s);if(el){el.innerHTML=opts;el.onchange=()=>showPersonCard(pre,s.includes('Yap')?'yap':'gizli')}});
+  showPersonCard(pre,'yap');showPersonCard(pre,'gizli');
+}
+function closeRep(id){const r=reports.find(x=>x.id===id);if(r)r.status='closed';save(K.reports,reports);renderArkRep();renderSocRep();updateStats();toast('Şikayet kapatıldı','',r?.app||'dash')}
+
+function applyYap(app){
+  const pre=app==='arkadas'?'ark':'soc';
+  const id=document.getElementById(pre+'YapMember').value;
+  const act=document.getElementById(pre+'YapAct').value;
+  const reason=document.getElementById(pre+'YapReason').value.trim();
+  const m=members.find(x=>x.id===id);if(!m)return;
+  const key=appKey(app);if(!m[key])m[key]={state:'active'};
+  if(act==='warn') toast('Uyarı ('+(app==='arkadas'?'Arkadaş':'Sosyal')+')',m.name+(reason?' · '+reason:''),app);
+  else if(act==='mute'){m[key].state='muted';m[key].muteUntil=Date.now()+MUTE_MS;toast('3 gün kısıtlandı',m.name,app)}
+  else if(act==='block'){m[key].state='blocked';delete m[key].muteUntil;toast('Engellendi',m.name,app)}
+  else if(act==='terminate'){m[key].state='terminated';delete m[key].muteUntil;toast('Üyelik sona erdi',m.name,app)}
+  save(K.members,members);fillSelects(pre);renderProfiles();renderAppLists(app);
+  document.getElementById(pre+'YapReason').value='';showPersonCard(pre,'yap');
+}
+
+function renderAppLists(app){
+  expireMutes();
+  const pre=app==='arkadas'?'ark':'soc';const key=appKey(app);
+  const muted=members.filter(m=>m[key]?.state==='muted');
+  const blocked=members.filter(m=>m[key]?.state==='blocked');
+  const term=members.filter(m=>m[key]?.state==='terminated');
+  const row=(m,actions)=>{
+    const left=m[key]?.muteUntil?Math.max(0,m[key].muteUntil-Date.now()):0;
+    const leftStr=left?` · kalan ~${Math.ceil(left/3600000)} saat`:'';
+    return `<div class="list-card"><div class="av">${m.photo?`<img src="${esc(m.photo)}">`:esc(init(m.name))}</div>
+      <div class="info"><b>${esc(m.name)}</b><small>${esc(m.role)} · ${esc(m.email)}${leftStr}<br>ID: ${esc(m.id)}</small></div>
+      <div class="acts">${actions}</div></div>`;
+  };
+  const muteBox=document.getElementById(pre+'MuteList');
+  const blockBox=document.getElementById(pre+'BlockList');
+  const termBox=document.getElementById(pre+'TermList');
+  if(muteBox){muteBox.className=muted.length?'':'empty';muteBox.innerHTML=muted.length?muted.map(m=>row(m,`<button class="btn btn-sm btn-ok" onclick="liftSanction('${app}','${m.id}','unmute')">Erken Affet</button>`)).join(''):'Yok'}
+  if(blockBox){blockBox.className=blocked.length?'':'empty';blockBox.innerHTML=blocked.length?blocked.map(m=>row(m,`<button class="btn btn-sm btn-ok" onclick="liftSanction('${app}','${m.id}','unblock')">Engeli Kaldır</button>`)).join(''):'Yok'}
+  if(termBox){termBox.className=term.length?'':'empty';termBox.innerHTML=term.length?term.map(m=>row(m,`<button class="btn btn-sm btn-gold" onclick="liftSanction('${app}','${m.id}','reactivate')">Üyeliği Aktif Et</button>`)).join(''):'Yok'}
+}
+function liftSanction(app,id,action){
+  const m=members.find(x=>x.id===id);if(!m)return;
+  const key=appKey(app);if(!m[key])m[key]={};
+  m[key].state='active';delete m[key].muteUntil;
+  save(K.members,members);renderAppLists(app);renderProfiles();
+  const labels={unmute:'Kısıtlama kaldırıldı',unblock:'Engel kaldırıldı',reactivate:'Üyelik aktif'};
+  toast(labels[action]||'Güncellendi',m.name+' · '+(app==='arkadas'?'Arkadaş Bul':'Sosyal'),app);
+}
+
+function sendDuyuru(app){const pre=app==='arkadas'?'ark':'soc';const subj=document.getElementById(pre+'DuySub').value.trim();const text=document.getElementById(pre+'DuyText').value.trim();if(!subj||!text)return alert('Konu ve metin gerekli');toast('Duyuru ('+(app==='arkadas'?'Arkadaş':'Sosyal')+')',subj,app);document.getElementById(pre+'DuySub').value='';document.getElementById(pre+'DuyText').value=''}
+function sendGizli(app){const pre=app==='arkadas'?'ark':'soc';const id=document.getElementById(pre+'GizliMember').value;const text=document.getElementById(pre+'GizliText').value.trim();const m=members.find(x=>x.id===id);if(!text||!m)return alert('Kişi ve mesaj gerekli');toast('Gizli mesaj ('+(app==='arkadas'?'Arkadaş':'Sosyal')+')',m.name+': '+text.slice(0,40),app);document.getElementById(pre+'GizliText').value=''}
+function saveCorp(){const t=document.getElementById('cTitle').value.trim(),f=document.getElementById('cFile').files?.[0];if(!t||!f)return alert('Başlık ve dosya gerekli');if(f.type.startsWith('video/')&&f.size>30*1024*1024)return alert('Max 30 MB');corp.unshift({id:uid(),title:t,name:f.name,date:now()});save(K.corp,corp);closeModal('corpModal');renderCorp();toast('Kurumsal medya',t,'sosyal',{sub:'soc-kurum'})}
+function renderCorp(){const box=document.getElementById('corpList');if(!corp.length){box.className='empty';box.textContent='Yok';return}box.className='';box.innerHTML=corp.map(c=>`<div class="list-card"><div class="av">🖼</div><div class="info"><b>${esc(c.title)}</b><small>${esc(c.name)} · ${esc(c.date)}</small></div></div>`).join('')}
+
+function loadCfg(){if(cfg.firebase){const map={Key:'apiKey',Auth:'authDomain',Db:'databaseURL',St:'storageBucket',Proj:'projectId',App:'appId'};Object.keys(map).forEach(k=>{const el=document.getElementById('fb'+k);if(el)el.value=cfg.firebase[map[k]]||''})}if(cfg.brevo){document.getElementById('brKey').value=cfg.brevo.apiKey||'';document.getElementById('brFrom').value=cfg.brevo.from||''}if(cfg.supabase){document.getElementById('sbUrl').value=cfg.supabase.url||'';document.getElementById('sbKey').value=cfg.supabase.key||''}if(cfg.cloudflare)document.getElementById('cfNote').value=cfg.cloudflare.note||''}
+function saveCfg(which){if(which==='firebase')cfg.firebase={apiKey:fbKey.value,authDomain:fbAuth.value,databaseURL:fbDb.value,storageBucket:fbSt.value,projectId:fbProj.value,appId:fbApp.value};if(which==='brevo')cfg.brevo={apiKey:brKey.value,from:brFrom.value};if(which==='supabase')cfg.supabase={url:sbUrl.value,key:sbKey.value};if(which==='cloudflare')cfg.cloudflare={note:cfNote.value};save(K.cfg,cfg);renderSvc();toast('Kaydedildi',which,'servis')}
+function renderSvc(){const items=[{n:'Firebase',on:!!(cfg.firebase&&cfg.firebase.apiKey)},{n:'Brevo',on:!!(cfg.brevo&&cfg.brevo.apiKey)},{n:'Supabase',on:!!(cfg.supabase&&cfg.supabase.url)},{n:'Cloudflare',on:!!(cfg.cloudflare&&cfg.cloudflare.note)},{n:'Vercel',on:false}];const h=items.map(i=>`<span class="svc ${i.on?'on':'off'}">${i.n} ${i.on?'●':'○'}</span>`).join('');document.getElementById('svcRow').innerHTML=h;const r2=document.getElementById('svcRow2');if(r2)r2.innerHTML=h}
+
+/** Demo: etüt odası adıyla şikayet */
+function addDemo(app){
+  if(app==='arkadas'){
+    reports.unshift({id:uid(),app:'arkadas',room:'Öğretmenler Odası',type:'Rahatsız edici mesaj',detail:"Arzu, Sadık'ı şikayet ediyor",from:'Arzu',target:'Sadık',targetId:'7',status:'open',time:now()});
+    toast('Sohbet · Öğretmenler Odası',"Arzu, Sadık'ı şikayet ediyor",'arkadas',{sub:'ark-sikayet',memberId:'7'});
+  }else{
+    reports.unshift({id:uid(),app:'sosyal',room:'Fizik-2',type:'Rahatsız edici konuşma',detail:"Etüt odasında şikayet",from:'Arzu',target:'Sadık',targetId:'7',status:'open',time:now()});
+    toast('Etüt · Fizik-2',"Arzu, Sadık'ı şikayet ediyor",'sosyal',{sub:'soc-sikayet',memberId:'7'});
+  }
+  save(K.reports,reports);updateStats();
+}
+window.addDemo=addDemo;
+
+setInterval(expireMutes,60000);
+document.addEventListener('DOMContentLoaded',()=>{expireMutes();updateStats();renderSvc();renderDash()});
+</script>
+</body>
+</html>
